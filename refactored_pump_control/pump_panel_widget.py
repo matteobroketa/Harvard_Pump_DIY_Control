@@ -432,6 +432,12 @@ class PumpPanelWidget(QtWidgets.QFrame):
         self.start_prof_btn.setEnabled(connected)
         self.stop_prof_btn.setEnabled(connected)
 
+    def handle_clear_profile(self):
+        self.profile.segments = []
+        self.refresh_profile_table()
+        self.update_estimate()
+        self.chart.reset(self.profile)
+
     def handle_save_profile(self):
         path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save Profile", "", "JSON (*.json)")
         if path:
