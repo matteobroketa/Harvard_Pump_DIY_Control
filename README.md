@@ -4,15 +4,6 @@ A desktop control application for Harvard Apparatus PHD Ultra / Pump 11 Elite sy
 
 This application is intended for laboratory use on Windows and is designed to be distributed as a standalone executable built with PyInstaller.
 
-## Status
-
-This repository is structured as a public-facing application repository. Before publishing, confirm that:
-
-- all machine-specific paths, usernames, screenshots, and local-only notes have been removed,
-- all default serial settings are intentional and documented,
-- the release workflow has been tested on GitHub,
-- the packaged `.exe` has been validated on a clean Windows machine.
-
 ## Safety notice
 
 This software controls real hardware.
