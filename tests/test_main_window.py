@@ -77,6 +77,49 @@ class MainWindowGlobalStartTests(unittest.TestCase):
         self.assertIn("Pump Session 3", message_text)
         self.assertIn("manual control", message_text)
 
+    def test_panel_helpers_drive_existing_session_paths(self):
+        session = mock.Mock()
+        session.session_id = 7
+        session.is_connected = True
+        session.connection_changed = mock.Mock()
+        session.status_updated = mock.Mock()
+        session.syringe_synced = mock.Mock()
+        session.error_occurred = mock.Mock()
+        session.profile_progress = mock.Mock()
+        session.rate_acknowledged = mock.Mock()
+        session.profile_status = mock.Mock()
+        session.profile_finished = mock.Mock()
+
+        for signal_name in [
+            "connection_changed",
+            "status_updated",
+            "syringe_synced",
+            "error_occurred",
+            "profile_progress",
+            "rate_acknowledged",
+            "profile_status",
+            "profile_finished",
+        ]:
+            getattr(session, signal_name).connect = mock.Mock()
+
+        with mock.patch(
+            "refactored_pump_control.pump_panel_widget.SerialTransport.list_available_ports",
+            return_value=[],
+        ):
+            from refactored_pump_control.pump_panel_widget import PumpPanelWidget
+
+            panel = PumpPanelWidget(session)
+
+        panel.rate_spin.setValue(12.5)
+        panel.unit_combo.setCurrentText("ml/h")
+        panel.dir_combo.setCurrentText("withdraw")
+
+        panel.start_manual_control()
+
+        session.set_rate.assert_called_once_with(12.5, "ml/h", "withdraw")
+        session.run.assert_called_once_with("withdraw")
+        self.assertFalse(panel.has_loaded_profile())
+
 
 if __name__ == "__main__":
     unittest.main()

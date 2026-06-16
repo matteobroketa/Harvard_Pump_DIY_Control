@@ -238,6 +238,16 @@ class PumpPanelWidget(QtWidgets.QFrame):
         self.chart.reset(self.profile)
         self.session.start_profile(self.profile)
 
+    def has_loaded_profile(self):
+        return bool(self.profile.segments)
+
+    def start_manual_control(self):
+        self.handle_set_rate()
+        self.handle_run()
+
+    def start_loaded_profile(self):
+        self.handle_start_profile()
+
     def update_profile_progress(self, seg_index, seg_elapsed, total_elapsed, ideal_r, actual_r):
         self.chart.update_cursor(total_elapsed)
         self.live_stats.setText(f"Ideal: {ideal_r:.3f} | Actual: {actual_r:.3f} | Div: {abs(ideal_r-actual_r):.3f}")
