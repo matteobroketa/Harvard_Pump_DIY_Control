@@ -120,6 +120,23 @@ class MainWindowGlobalStartTests(unittest.TestCase):
         session.run.assert_called_once_with("withdraw")
         self.assertFalse(panel.has_loaded_profile())
 
+    def test_start_all_profiles_skips_popup_when_every_panel_has_profile(self):
+        first_panel = DummyPanel(session_id=1, connected=True, has_profile=True)
+        second_panel = DummyPanel(session_id=2, connected=True, has_profile=True)
+
+        self.window.session_panels = {
+            first_panel.session: first_panel,
+            second_panel.session: second_panel,
+        }
+        self.window.sessions = [first_panel.session, second_panel.session]
+
+        with mock.patch("refactored_pump_control.main_window.QtWidgets.QMessageBox.information") as info_box:
+            self.window.handle_start_all_profiles()
+
+        first_panel.start_loaded_profile.assert_called_once_with()
+        second_panel.start_loaded_profile.assert_called_once_with()
+        info_box.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()
